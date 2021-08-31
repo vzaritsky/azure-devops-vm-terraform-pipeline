@@ -1,0 +1,80 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: TerraformValidate
+    jobs:
+      - job: TerraformValidateJob
+        continueOnError: false
+        steps:
+        - task: PublishPipelineArtifact@1
+          displayName: Publish Artifacts
+          inputs:
+          targetPath: '$(Pipeline.Workspace)'
+          artifact: 'terraform-vm-out'
+          publishLocation: 'pipeline'
+        - task: TerraformInstaller@0
+          displayName: Terraform Install
+          inputs:
+            terraformVersion: '1.0.5'
+        - task: TerraformCLI@0
+          displayName: Terraform Init
+          inputs:
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            backendType: 'azurerm'
+            backendServiceArm: 'terraform-aks-azurerm-svc-con'
+            backendAzureRmResourceGroupName: 'terraform-storage-rg'
+            backendAzureRmStorageAccountName: 'terraformstatexlrwdrzs77'
+            backendAzureRmContainerName: 'tfstatefiles'
+            backendAzureRmKey: 'terraform.tfstate'
+            allowTelemetryCollection: false
+        - task: TerraformCLI@0
+          displayName: Terraform Validate
+          inputs:
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            allowTelemetryCollection: false
+
+  - stage: DeployVM
+    jobs:
+      - deployment: DeployVM
+        displayName: DeployMV
+        pool: 
+          vmImage: 'Ubuntu-latest'
+        environment: 'dev'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: TerraformCLI@0
+                  displayName: 
+                  inputs:
+                    command: 'init'
+                    workingDirectory: '$(Pipeline.Workspace)'
+                    backendType: 'azurerm'
+                    backendServiceArm: 'terraform-aks-azurerm-svc-con'
+                    backendAzureRmResourceGroupName: 'terraform-storage-rg'
+                    backendAzureRmStorageAccountName: 'terraformstatexlrwdrzs77'
+                    backendAzureRmContainerName: 'tfstatefiles'
+                    backendAzureRmKey: 'dev-vm.tfstate'
+                    allowTelemetryCollection: false
+                - task: TerraformCLI@0
+                  displayName: Terraform Plan
+                  inputs:
+                    command: 'plan'
+                    workingDirectory: '$(Pipeline.Workspace)'
+                    environmentServiceName: 'terraform-aks-azurerm-svc-con'
+                    commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath) -var environment=dev -out $(Pipeline.Workspace)/dev-$(Build.BuildId).out'
+                    allowTelemetryCollection: false
+                - task: TerraformCLI@0
+                  inputs:
+                    command: 'apply'
+                    workingDirectory: '$(Pipeline.Workspace)'
+                    environmentServiceName: 'terraform-aks-azurerm-svc-con'
+                    commandOptions: '$(Pipeline.Workspace)/dev-$(Build.BuildId).out'
+                    allowTelemetryCollection: false
+      
