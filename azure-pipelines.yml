@@ -54,7 +54,7 @@ stages:
                   displayName: Terraform Init
                   inputs:
                     command: 'init'
-                    workingDirectory: '$(Pipeline.Workspace)-out'
+                    workingDirectory: '$(Pipeline.Workspace)'
                     backendType: 'azurerm'
                     backendServiceArm: 'terraform-aks-azurerm-svc-con'
                     backendAzureRmResourceGroupName: 'terraform-storage-rg'
@@ -66,16 +66,16 @@ stages:
                   displayName: Terraform Plan
                   inputs:
                     command: 'plan'
-                    workingDirectory: '$(Pipeline.Workspace)-out'
+                    workingDirectory: '$(Pipeline.Workspace)'
                     environmentServiceName: 'terraform-aks-azurerm-svc-con'
-                    commandOptions: '-out $(Pipeline.Workspace)-out/dev-$(Build.BuildId).out'
+                    #commandOptions: '-out $(Pipeline.Workspace)-out/dev-$(Build.BuildId).out'
                     allowTelemetryCollection: false
                 - task: TerraformCLI@0
                   displayName: Terraform Apply
                   inputs:
                     command: 'apply'
-                    workingDirectory: '$(Pipeline.Workspace)-out'
+                    workingDirectory: '$(Pipeline.Workspace)'
                     environmentServiceName: 'terraform-aks-azurerm-svc-con'
-                    commandOptions: '$(Pipeline.Workspace)-out/dev-$(Build.BuildId).out'
+                    #commandOptions: '$(Pipeline.Workspace)-out/dev-$(Build.BuildId).out'
                     allowTelemetryCollection: false
       
