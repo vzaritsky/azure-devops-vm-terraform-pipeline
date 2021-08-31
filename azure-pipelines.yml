@@ -13,7 +13,7 @@ stages:
         - task: PublishPipelineArtifact@1
           displayName: Publish Artifacts
           inputs:
-            targetPath: '$(Pipeline.Workspace)'
+            targetPath: '$(System.DefaultWorkingDirectory)'
             artifact: 'terraform-vm-out'
             publishLocation: 'pipeline'
         - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
@@ -74,7 +74,7 @@ stages:
                   displayName: Terraform Apply
                   inputs:
                     command: 'apply'
-                    workingDirectory: '$(Pipeline.Workspace)'
+                    workingDirectory: '$(Pipeline.Workspace)/out'
                     environmentServiceName: 'terraform-aks-azurerm-svc-con'
                     commandOptions: '$(Pipeline.Workspace)/out/dev-$(Build.BuildId).out'
                     allowTelemetryCollection: false
