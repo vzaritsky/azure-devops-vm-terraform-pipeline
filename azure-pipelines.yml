@@ -75,7 +75,7 @@ stages:
                     workingDirectory: '$(Pipeline.Workspace)'
                     environmentServiceName: 'terraform-aks-azurerm-svc-con'
                     #commandOptions: '-destroy'
-                    commandOptions: '-out $(Pipeline.Workspace)/dev-$(Build.BuildId).out'
+                    commandOptions: '-var environment=dev1 -out $(Pipeline.Workspace)/dev1-$(Build.BuildId).out'
                     allowTelemetryCollection: false
                 - task: TerraformCLI@0
                   displayName: Terraform Apply
@@ -83,6 +83,6 @@ stages:
                     command: 'apply'
                     workingDirectory: '$(Pipeline.Workspace)'
                     environmentServiceName: 'terraform-aks-azurerm-svc-con'
-                    commandOptions: '$(Pipeline.Workspace)/dev-$(Build.BuildId).out'
+                    commandOptions: '$(Pipeline.Workspace)/dev1-$(Build.BuildId).out'
                     allowTelemetryCollection: false
       
