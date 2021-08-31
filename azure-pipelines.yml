@@ -62,18 +62,19 @@ stages:
                     backendAzureRmContainerName: 'tfstatefiles'
                     backendAzureRmKey: 'dev-vm.tfstate'
                     allowTelemetryCollection: false
-                - task: TerraformCLI@0
-                  inputs:
-                    command: 'destroy'
-                    workingDirectory: '$(Pipeline.Workspace)'
-                    environmentServiceName: 'terraform-aks-azurerm-svc-con'
-                    allowTelemetryCollection: false'
+                #- task: TerraformCLI@0
+                #  inputs:
+                #    command: 'destroy'
+                #    workingDirectory: '$(Pipeline.Workspace)'
+                #    environmentServiceName: 'terraform-aks-azurerm-svc-con'
+                #    allowTelemetryCollection: false'
                 - task: TerraformCLI@0
                   displayName: Terraform Plan
                   inputs:
                     command: 'plan'
                     workingDirectory: '$(Pipeline.Workspace)'
                     environmentServiceName: 'terraform-aks-azurerm-svc-con'
+                    commandOptions: '-destroy'
                     #commandOptions: '-out $(Pipeline.Workspace)-out/dev-$(Build.BuildId).out'
                     allowTelemetryCollection: false
                 - task: TerraformCLI@0
