@@ -13,10 +13,10 @@ stages:
         - task: PublishPipelineArtifact@1
           displayName: Publish Artifacts
           inputs:
-          targetPath: '$(Pipeline.Workspace)'
-          artifact: 'terraform-vm-out'
-          publishLocation: 'pipeline'
-        - task: TerraformInstaller@0
+            targetPath: '$(Pipeline.Workspace)'
+            artifact: 'terraform-vm-out'
+            publishLocation: 'pipeline'
+        - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
           displayName: Terraform Install
           inputs:
             terraformVersion: '1.0.5'
