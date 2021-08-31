@@ -51,7 +51,7 @@ stages:
             deploy:
               steps:
                 - task: TerraformCLI@0
-                  displayName: 
+                  displayName: Terraform Init
                   inputs:
                     command: 'init'
                     workingDirectory: '$(Pipeline.Workspace)'
@@ -68,9 +68,10 @@ stages:
                     command: 'plan'
                     workingDirectory: '$(Pipeline.Workspace)'
                     environmentServiceName: 'terraform-aks-azurerm-svc-con'
-                    commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath) -var environment=dev -out $(Pipeline.Workspace)/dev-$(Build.BuildId).out'
+                    commandOptions: '-var environment=dev -out $(Pipeline.Workspace)/dev-$(Build.BuildId).out'
                     allowTelemetryCollection: false
                 - task: TerraformCLI@0
+                  displayName: Terraform Apply
                   inputs:
                     command: 'apply'
                     workingDirectory: '$(Pipeline.Workspace)'
