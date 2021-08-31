@@ -64,4 +64,4 @@ resource "azurerm_linux_virtual_machine" "mid" {
     sku       = "20.04-LTS"
     version   = "latest"
   }
-} #
+}
