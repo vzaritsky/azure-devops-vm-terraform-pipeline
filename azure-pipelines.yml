@@ -45,7 +45,7 @@ stages:
         displayName: DeployMV
         pool: 
           vmImage: 'Ubuntu-latest'
-        environment: 'dev'
+        environment: 'dev1'
         strategy:
           runOnce:
             deploy:
